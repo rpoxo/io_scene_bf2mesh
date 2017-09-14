@@ -26,7 +26,7 @@ class BF2StaticMesh:
 
     def _create_u1_bfp4f_version(self, vmesh):
         vmesh.u1 = 0
-        
+
     def _create_geomtable(self, vmesh):
         vmesh.geomnum = 1
         vmesh.geoms = [modmesh.bf2geom() for i in range(vmesh.geomnum)]
