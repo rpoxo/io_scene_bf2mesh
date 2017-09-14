@@ -1,20 +1,4 @@
-# ##### BEGIN GPL LICENSE BLOCK #####
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
-# ##### END GPL LICENSE BLOCK #####
+
 
 bl_info = {
     "name": "DICE Refractor2 mesh format",
@@ -27,14 +11,14 @@ bl_info = {
 
 if "bpy" in locals():
     import importlib
-    if "import_bf2mesh" in locals():
-        importlib.reload(import_bf2mesh)
+    #if "import_bf2mesh" in locals():
+    #    importlib.reload(import_bf2mesh)
     if "export_bf2mesh" in locals():
         importlib.reload(export_bf2mesh)
 
 
 import bpy
-# remove
+# remove many shit
 from bpy.props import (
         #BoolProperty,
         #EnumProperty,
@@ -44,12 +28,12 @@ from bpy.props import (
 from bpy_extras.io_utils import (
         #ImportHelper,
         ExportHelper,
-        #orientation_helper_factory,
-        #axis_conversion,
+        orientation_helper_factory,
+        axis_conversion,
         )
 
 
-#IO3DSOrientationHelper = orientation_helper_factory("IO3DSOrientationHelper", axis_forward='Y', axis_up='Z')
+IO3DSOrientationHelper = orientation_helper_factory("IO3DSOrientationHelper", axis_forward='Y', axis_up='Z')
 
 
 class ExportBF2Mesh(bpy.types.Operator,
@@ -57,24 +41,30 @@ class ExportBF2Mesh(bpy.types.Operator,
                     #IO3DSOrientationHelper):
                     ):
     """Export to Refractor2 mesh file format (.staticmesh)"""
-    bl_idname = "export_scene.refractor2_mesh"
-    bl_label = 'Export .staticmesh'
+    bl_idname = "export_scene.bf2_mesh"
+    bl_label = 'Export'
 
-    filename_ext = "."
+    filename_ext = ".staticmesh"
     filter_glob = StringProperty(
-            default="*.staticmesh",
+            default="*.staticmesh", # displays existing
             options={'HIDDEN'},
             )
 
     def execute(self, context):
         from . import export_bf2mesh
+        
+        keywords = self.as_keywords(ignore=(#"axis_forward",
+                                            #"axis_up",
+                                            "filter_glob",
+                                            "check_existing",
+                                            ))
 
-        return export_bf2mesh.save(self, context, **keywords)
+        return export_bf2mesh.save(self, context, **keywords) # do i even need context?
 
 
 # Add to a menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportBF2Mesh.bl_idname, text="Refractor2 staticmesh (.staticmesh)")
+    self.layout.operator(ExportBF2Mesh.bl_idname, text="DICE BF2Mesh (.staticmesh), (.bundledmesh), (.skinnedmesh), (.collisionmesh)")
 
 
 def register():
